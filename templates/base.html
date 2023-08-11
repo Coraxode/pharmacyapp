@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .filters {
+            flex: 0.35;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+
+        .medicines {
+            flex: 2;
+            padding: 20px;
+            display: inline-block;
+        }
+
+        .filter {
+            margin-bottom: 10px;
+        }
+
+        .search {
+            margin-bottom: 20px;
+        }
+
+        .medicine {
+            width: 320px;
+            height: 275px;
+            margin-bottom: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            display: inline-block;
+        }
+
+        #topNavLine {
+            width: 100%;
+            height: 40px;
+            background: #000;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            z-index: 9999;
+        }
+
+        .topNavApt {
+            position: absolute;
+            left: 300px;
+            top: 2px;
+            font-size: 32px;
+            font-family: Helvetica;
+            color: white;
+            text-decoration: none;
+        }
+
+        .button-upload {
+            position: absolute;
+            left: 970px;
+            top: 2px;
+            width: 170px;
+            height: 32px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        function addParameter(param, value) {
+            var currentURL = window.location.href;
+            var newURL;
+
+            if (currentURL.indexOf('?') !== -1) {
+                newURL = currentURL + '&' + param + '=' + value;
+            } else {
+                newURL = currentURL + '?' + param + '=' + value;
+            }
+
+            window.location.href = newURL;
+        }
+
+        function delParameter(parameter) {
+            var url = window.location.href;
+            url = url.replace(parameter, '');
+
+            while (url.includes('&&')) {
+                url = url.replace('&&', '&');
+            }
+
+            if (url.includes('?&')) {
+                url = url.replace('?&', '?');
+            }
+
+            if (url[url.length - 1] === '&') {
+                url = url.slice(0, -1);
+            }
+
+            if (url[url.length - 1] === '?') {
+                url = url.slice(0, -1);
+            }
+
+            window.location.href = url;
+        }
+
+        function search() {
+            var currentURL = window.location.href;
+            var query = document.getElementById("search_input").value;
+
+            if (currentURL.indexOf("search=") !== -1) {
+                window.location.href = currentURL.replace(currentURL.split("search=")[1].split("&")[0], query);
+                return;
+            }
+
+            if (currentURL.indexOf('?') !== -1) {
+                window.location.href = currentURL + '&search=' + query;
+            } else {
+                window.location.href = currentURL + "?search=" + query;
+            }
+        }
+
+        function toggleVisibility() {
+            var div1 = document.getElementById("div_specs");
+            var div2 = document.getElementById("div_change_specs");
+
+            if (div1.style.display === "none") {
+                div1.style.display = "block";
+                div2.style.display = "none";
+            } else {
+                div1.style.display = "none";
+                div2.style.display = "block";
+            }
+        }
+
+        function setPrice() {
+            var price_field = document.getElementById("input_price");
+            price_field.value = (document.getElementById("label_price").textContent).split(' ')[1];
+        }
+
+        function refreshPrice() {
+            var summ = 0;
+            const elems = document.getElementsByTagName('select');
+            for (const elem of elems) {
+                if (elem.value !== 'Оберіть препарат') {
+                    var selectedId = elem.options[elem.selectedIndex].id;
+                    var counterId = selectedId.split('_')[0] + "_counter";
+                    var counterValue = document.getElementById(counterId).value;
+                    summ += parseFloat((selectedId.split('_')[2]).replace(',', '.')) * parseFloat(counterValue);
+                }
+            }
+
+            var price_label = document.getElementById("label_price")
+            price_label.textContent = "Ціна: " + summ.toFixed(2) + " грн"
+        }
+
+        function createNewLine() {
+            refreshPrice()
+
+            const divElements = document.getElementsByTagName('div');
+
+            for (let i  = 0; i < divElements.length; i++) {
+                const div = divElements[i];
+
+                if (div.style.display === "none") {
+                    var selected_option = document.getElementById(i-1 + "_select")
+                    var count_label = document.getElementById(i-1 + "_label_count")
+                    var counter = document.getElementById(i-1 + "_counter")
+
+                    div.style.display = "block";
+                    count_label.style.display = "block";
+                    count_label.textContent = "Залишилось на складі: " + (selected_option.options[selected_option.selectedIndex].id).split("_")[4];
+                    counter.max = (selected_option.options[selected_option.selectedIndex].id).split("_")[4];
+                    break;
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="topNavLine">
+        <a href="/drugs" class="topNavApt">
+            <form action="/create_order"><button class="button-upload" style="width: 200px;">Створити замовлення</button></form>
+            <form action="/add_drug"><button class="button-upload" style="left: 1175px;">Додати препарат</button></form>
+            <strong>Аптека</strong>
+        </a>
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>

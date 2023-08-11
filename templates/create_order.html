@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Створити замовлення
+{% endblock %}
+
+{% block content %}
+    <style>
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding-left: 500px;
+            padding-right: 500px;
+            padding-top: 25px;
+        }
+
+        .button-confirm {
+            width: 170px;
+            height: 32px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-left: 25px;
+        }
+    </style>
+
+    <h1>Створення замовлення</h1>
+    <hr>
+    <form action="{% url 'create_order' %}" method="post">
+        {% csrf_token %}
+
+        {% for i in drugs %}
+            <div id="div_choose_drug_{{ i.id }}" style="display: none;">
+                <p style="font-size: 15px; display: inline-block;">Препарат:</p>
+                <select id="{{ i.id }}_select" onchange="createNewLine()" name="chosen_drug">
+                    <option>Оберіть препарат</option>
+                    {% for drug in drugs %}
+                        <option id="{{ i.id }}_price_{{ drug.price }}_count_{{ drug.number_of_drugs }}">{{ drug.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" id="{{ i.id }}_counter" name="count_drug" onchange="refreshPrice()" value="1" placeholder="Кількість" style="width: 70px;" required>
+                <label id="{{ i.id }}_label_count" style="margin-top: -10px; font-size: 15px; display: none;">Залишилось на складі: </label>
+            </div>
+        {% endfor %}
+
+        <script>document.getElementById("div_choose_drug_1").style.display = "block";</script>
+
+        <label id="label_price" style="font-size: 20px;">Ціна: 0 грн</label>
+        <input id="input_price" name="Price" style="display: none;">
+
+        <button class="button-confirm" onclick="setPrice()">Підтвердити</button>
+    </form>
+    <button class="button-confirm" style="width: 190px; position: absolute; left: 1184px; top: 120px;" onclick="location.href='/order_history';">Історія замовлень</button>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Аптека
+{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            margin: 20px;
+            padding-left: 80px;
+            padding-right: 80px;
+            padding-top: 25px;
+        }
+    </style>
+    <div class="container">
+        <div class="filters">
+            <h3>Фільтри</h3>
+
+            <div class="search">
+                <input type="text" id="search_input" placeholder="Введіть назву препарату">
+                <button style="position: absolute; left: 300px; top: 124px;" onclick="search()">Пошук</button>
+            </div>
+
+            <p style="font-weight: bold; margin-bottom: 5px; padding-left: 5px;">Категорія</p>
+            {% for category in categories %}
+                <div class="filter">
+                    {% if category in checked_categories %}
+                        <label><input type="checkbox" name="filter" value="{{ category }}" onclick="delParameter('category={{ category.id }}')" checked> {{ category }}</label>
+                    {% else %}
+                        <label><input type="checkbox" name="filter" value="{{ category }}" onclick="addParameter('category', '{{ category.id }}')"> {{ category }}</label>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <p style="font-weight: bold; margin-bottom: 5px; padding-left: 5px; padding-top: 25px;">Форма випуску</p>
+            {% for form in forms %}
+                <div class="filter">
+                    {% if form in checked_forms %}
+                        <label><input type="checkbox" name="filter" value="{{ form }}" onclick="delParameter('form={{ form.id }}')" checked> {{ form }}</label>
+                    {% else %}
+                        <label><input type="checkbox" name="filter" value="{{ form }}" onclick="addParameter('form', '{{ form.id }}')"> {{ form }}</label>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <p style="font-weight: bold; margin-bottom: 5px; padding-left: 5px; padding-top: 25px;">Виробник</p>
+            {% for manufacturer in manufacturers %}
+                <div class="filter">
+                    {% if manufacturer in checked_manufacturers %}
+                        <label><input type="checkbox" name="filter" value="{{ manufacturer }}" onclick="delParameter('manufacturer={{ manufacturer.id }}')" checked> {{ manufacturer }}</label>
+                    {% else %}
+                        <label><input type="checkbox" name="filter" value="{{ manufacturer }}" onclick="addParameter('manufacturer', '{{ manufacturer.id }}')"> {{ manufacturer }}</label>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <p style="font-weight: bold; margin-bottom: 5px; padding-left: 5px; padding-top: 25px;">Країна</p>
+            {% for country_of_origin in country_of_origins %}
+                <div class="filter">
+                    {% if country_of_origin in checked_country_of_origins %}
+                        <label><input type="checkbox" name="filter" value="{{ country_of_origin }}" onclick="delParameter('country_of_origin={{ country_of_origin.id }}')" checked> {{ country_of_origin }}</label>
+                    {% else %}
+                        <label><input type="checkbox" name="filter" value="{{ country_of_origin }}" onclick="addParameter('country_of_origin', '{{ country_of_origin.id }}')"> {{ country_of_origin }}</label>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="medicines">
+            {% for drug in drugs %}
+                <div class="medicine" onclick="location.href='drug_{{ drug.id }}';">
+                    <img src="{{ drug.photo }}" width="200" height="200" style="display: block; margin: 0 auto;"/>
+                    <hr style="margin-bottom: -15px">
+                    <h3>{{ drug.name }}</h3>
+                    <p style="font-weight: bold;">{{ drug.price }} грн</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

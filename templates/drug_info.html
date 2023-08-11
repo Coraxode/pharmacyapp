@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Інформація про медичний препарат
+{% endblock %}
+
+{% block content %}
+    <style>
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding-left: 250px;
+            padding-right: 250px;
+            padding-top: 25px;
+        }
+
+        h1 {
+             color: #333;
+        }
+
+        p {
+            line-height: 1.5;
+        }
+    </style>
+
+    <h1>{{ drug.name }}</h1>
+    <hr>
+    <img src="{{ drug.photo }}" width="500" height="500">
+
+    <div style="position: absolute; left: 850px; top: 192px;">
+        <h3>Характеристики</h3>
+        <p>Категорія</p>
+        <hr width="600" align="left" style="margin: -10px">
+        <p>Форма випуску</p>
+        <hr width="600" align="left" style="margin: -10px">
+        <p>Виробник</p>
+        <hr width="600" align="left" style="margin: -10px">
+        <p>Країна-виробник</p>
+        <hr width="600" align="left" style="margin: -10px">
+        <p>Чи потрібен рецепт</p>
+        <hr width="600" align="left" style="margin: -10px">
+        <p>Дата виготовлення</p>
+        <hr width="600" align="left" style="margin: -10px">
+        <p>Термін придатності</p>
+        <hr width="600" align="left" style="margin: -10px">
+        <p>Кількість на складі</p>
+    </div>
+
+    <div style="position: absolute; left: 1050px; top: 235px; display: block;" id="div_specs">
+        <h1 style="position: absolute; left: -205px; top: -110px;">{{ drug.price }} грн</h1>
+
+        <button onclick="toggleVisibility()"
+            style="position: absolute; left: 297px; top: -30px; font-size: 14px; font-weight: 600;">Редагувати
+        </button>
+
+        <p>{% for cat in drug.category.all %}{{ cat }}{% endfor %}</p>
+        <hr width="0" style="margin: -10px;">
+        <p>{% for form in drug.form.all %}{{ form }}{% endfor %}</p>
+        <hr width="0" style="margin: -10px">
+        <p>{% for manufacturer in drug.manufacturer.all %}{{ manufacturer }}{% endfor %}</p>
+        <hr width="0" style="margin: -10px">
+        <p>{% for country in drug.country_of_origin.all %}{{ country }}{% endfor %}</p>
+        <hr width="0" style="margin: -10px">
+
+        {% if drug.is_prescription_required %}
+            <p style="color: red; font-weight: bold;">Так</p>
+        {% else %}
+            <p>Ні</p>
+        {% endif %}
+
+        <hr width="0" style="margin: -10px">
+        <p>{{ drug.date_of_manufacture }}</p>
+        <hr width="0" style="margin: -10px">
+        <p>{{ drug.service_life }} місяців</p>
+        <hr width="0" style="margin: -10px">
+        <p style="font-weight: bold;">{{ drug.number_of_drugs }}</p>
+        <form action="action/delete_drug_{{ drug.id }}/1">
+            <button style="position: absolute; left: 118px; top: 280px; font-size: 15px; font-weight: 600; width: 140px; background: red;">Видалити 1 шт</button>
+        </form>
+        <form action="action/delete_drug_{{ drug.id }}/0">
+            <button style="position: absolute; left: 262px; top: 280px; font-size: 15px; font-weight: 600; width: 130px; background: red;">Видалити все</button>
+        </form>
+    </div>
+
+    <div style="position: absolute; left: 1050px; top: 235px; display: none;" id="div_change_specs">
+        <form method="post" action="action/change_drug_{{ drug.id }}">
+            {% csrf_token %}
+            <input type="text" id="price" name="price" value="{{ drug.price }}" size="27" style="position: absolute; left: -205px; top: -110px; font-size: 34px; font-weight: bold; margin-bottom: 20px; margin-top: 12px;">
+
+            <button onclick="toggleVisibility()" type="submit"
+                style="position: absolute; left: 313px; top: -30px; font-size: 14px; font-weight: 600;">Зберегти
+            </button>
+
+            <input type="text" id="category" name="category" value="{% for cat in drug.category.all %}{{ cat }}{% endfor %}" size="43" style="font-size: 16px; margin-bottom: 20px; margin-top: 12px;">
+            <hr width="0" style="margin: -10px">
+            <input type="text" id="form" name="form" value="{% for form in drug.form.all %}{{ form }}{% endfor %}" size="43" style="font-size: 16px; margin-bottom: 20px; margin-top: 12px;">
+            <hr width="0" style="margin: -10px">
+            <input type="text" id="manufacturer" name="manufacturer" value="{% for manufacturer in drug.manufacturer.all %}{{ manufacturer }}{% endfor %}" size="43" style="font-size: 16px; margin-bottom: 20px; margin-top: 12px;">
+            <hr width="0" style="margin: -10px">
+            <input type="text" id="country_of_origin" name="country_of_origin" value="{% for country in drug.country_of_origin.all %}{{ country }}{% endfor %}" size="43" style="font-size: 16px; margin-bottom: 20px; margin-top: 12px;">
+            <hr width="0" style="margin: -10px">
+
+            {% if drug.is_prescription_required %}
+                <p style="color: red; font-weight: bold;">Так</p>
+            {% else %}
+                <p>Ні</p>
+            {% endif %}
+
+            <hr width="0" style="margin: -10px">
+            <p>{{ drug.date_of_manufacture }}</p>
+            <hr width="0" style="margin: -10px">
+            <input type="text" id="service_life" name="service_life" value="{{ drug.service_life }}" size="43" style="font-size: 16px; margin-bottom: 20px; margin-top: 12px;">
+            <hr width="0" style="margin: -10px">
+            <input type="text" id="number_of_drugs" name="number_of_drugs" value="{{ drug.number_of_drugs }}" size="43" style="font-size: 16px; margin-bottom: 20px; margin-top: 12px;">
+        </form>
+    </div>
+
+    <hr>
+    <h2>Опис</h2>
+
+    <p>{{ drug.description }}</p>
+{% endblock %}

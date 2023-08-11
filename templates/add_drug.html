@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Додати препарат
+{% endblock %}
+
+{% block content %}
+    <style>
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding-left: 500px;
+            padding-right: 500px;
+            padding-top: 25px;
+        }
+
+        .button-add {
+            width: 170px;
+            height: 32px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+
+    <h1>Додавання препарату</h1>
+    <hr>
+    <form action="{% url 'add_drug' %}" method="post">
+        {% csrf_token %}
+
+        <label for="name">Назва препарату:</label>
+        <input type="text" id="name" name="name" placeholder="Введіть назву препарату" required><br><br>
+
+        <label for="price">Ціна препарату:</label>
+        <input type="text" id="price" name="price" placeholder="Введіть ціну препарату" required><br><br>
+
+        <label for="category">Категорія препарату:</label>
+        <input type="text" id="category" name="category" placeholder="Введіть категорію препарату" required><br><br>
+
+        <label for="form">Форма випуску препарату:</label>
+        <input type="text" id="form" name="form" placeholder="Введіть форму випуску препарату" required><br><br>
+
+        <label for="manufacturer">Виробник препарату:</label>
+        <input type="text" id="manufacturer" name="manufacturer" placeholder="Введіть тип препарату" required><br><br>
+
+        <label for="country_of_origin">Країна-виробник:</label>
+        <input type="text" id="country_of_origin" name="country_of_origin" placeholder="Введіть країну-виробника препарату" required><br><br>
+
+        <label for="is_prescription_required">Чи потрібен рецепт для покупки?</label>
+        <input type="checkbox" id="is_prescription_required" name="is_prescription_required"><br><br>
+
+        <label for="date_of_manufacture">Дата виготовлення:</label>
+        <input type="date" id="date_of_manufacture" name="date_of_manufacture" placeholder="" required><br><br>
+
+        <label for="service_life">Термін придатності (в місяцях):</label>
+        <input type="number" id="service_life" name="service_life" placeholder="Введіть термін придатності в місяцях" required><br><br>
+
+        <label for="photo">Фото препарату:</label>
+        <textarea id="photo" name="photo" rows="3" cols="100" required>{{ biography }}</textarea><br><br>
+
+        <label for="description">Опис:</label><br>
+        <textarea id="description" name="description" rows="12" cols="100" required>{{ biography }}</textarea><br><br>
+
+        <label for="number_of_drugs">Кількість препарату:</label>
+        <input type="number" id="number_of_drugs" name="number_of_drugs" placeholder="Введіть кількість препарату" required><br><br>
+
+        <button type="submit" class="button-add">Додати</button>
+    </form>
+
+{% endblock %}

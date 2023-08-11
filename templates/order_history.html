@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Історія замовлень
+{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding-left: 500px;
+            padding-right: 500px;
+            padding-top: 25px;
+        }
+    </style>
+
+    <h1>Історія замовлень</h1>
+    <hr>
+
+    {% for order in orders %}
+        <label style="font-weight: bold;">Замовлення № {{ order.id }}</label>
+        <br>
+        {% for drug in order.drugs %}
+            <br>
+            <label>
+                - {{ drug.name }} в кількості {{ drug.count }} одиниць
+            </label>
+        {% endfor %}
+        <br><br>
+        <label style="font-weight: bold;">Ціна: </label>
+        <label>{{ order.price }} грн</label>
+        <br>
+        <label style="font-weight: bold;">Дата: </label>
+        <label>{{ order.time }}</label>
+        <br><br><hr>
+    {% endfor %}
+
+{% endblock %}
